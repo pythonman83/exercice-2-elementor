@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Guide pas à pas pour créer une page portfolio de Community Manager avec Elementor et LocalWP. Tutoriel détaillé pour débutants, avec galerie, fiches projets en accordéon et barres de compétences animées.">
+    <meta name="keywords" content="portfolio community manager, créer page portfolio, tutoriel elementor, localwp, page réalisations cm, galerie projets cm, fiches projets accordéon, barres compétences animées, tutoriel wordpress cm">
+    <meta name="author" content="MODE 83 Draguignan">
+    <meta property="og:title" content="Créer une Page Portfolio CM avec Elementor + LocalWP | MODE 83">
+    <meta property="og:description" content="Guide pas à pas pour créer une page portfolio de Community Manager avec Elementor et LocalWP. Tutoriel détaillé pour débutants, avec galerie, fiches projets en accordéon et barres de compétences animées.">
+    <meta property="og:image" content="https://mode83.fr/portfolio-cm/preview.png">
+    <meta property="og:url" content="https://mode83.fr/portfolio-cm/">
+
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
+
+    <title>Exercice 2 — Créer une page portfolio CM avec Elementor + LocalWP | MODE 83</title>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a28;
+            --accent-primary: #E17055;
+            --accent-secondary: #fab1a0;
+            --accent-cool: #74b9ff;
+            --accent-success: #00cec9;
+            --accent-warning: #fdcb6e;
+            --accent-danger: #E74C3C;
+            --accent-localwp: #51E27D;
+            --accent-purple: #a29bfe;
+            --text-primary: #f0f0f5;
+            --text-secondary: #9898b0;
+            --text-muted: #65658a;
+            --border-color: rgba(225, 112, 85, 0.15);
+            --glow-primary: rgba(225, 112, 85, 0.3);
+            --glow-cool: rgba(116, 185, 255, 0.2);
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Space Grotesk', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body { font-family:var(--font-body); background:var(--bg-primary); color:var(--text-primary); line-height:1.7; overflow-x:hidden; }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background:var(--accent-primary); border-radius:10px; }
+
+        .ambient-bg { position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none; }
+        .ambient-bg .orb { position:absolute; border-radius:50%; filter:blur(120px); opacity:0.10; animation:orbFloat 22s ease-in-out infinite; }
+        .ambient-bg .orb:nth-child(1) { width:550px;height:550px;background:var(--accent-primary);top:-8%;left:-8%; }
+        .ambient-bg .orb:nth-child(2) { width:450px;height:450px;background:var(--accent-cool);bottom:-8%;right:-8%;animation-delay:-8s; }
+        .ambient-bg .orb:nth-child(3) { width:350px;height:350px;background:var(--accent-localwp);top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:-15s; }
+        @keyframes orbFloat { 0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(25px,-35px) scale(1.04);} 66%{transform:translate(-20px,25px) scale(0.96);} }
+
+        /* ── NAV ── */
+        .top-nav { position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,10,15,0.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-color);padding:0.6rem 0;transition:all 0.3s ease; }
+        .top-nav.scrolled { box-shadow:0 4px 30px rgba(0,0,0,0.4); }
+        .nav-brand { font-family:var(--font-display);font-weight:800;font-size:1.3rem;color:var(--text-primary);text-decoration:none; }
+        .nav-brand span { color:var(--accent-primary); }
+        .nav-progress-wrap { position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(225,112,85,0.1); }
+        .nav-progress-bar { height:100%;width:0%;background:linear-gradient(90deg,var(--accent-primary),var(--accent-cool));border-radius:0 3px 3px 0;transition:width 0.15s ease; }
+        .badge-exo { background:linear-gradient(135deg,var(--accent-primary),var(--accent-cool));color:white;font-size:0.7rem;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:0.5px; }
+        .badge-localwp { background:rgba(81,226,125,0.12);border:1px solid rgba(81,226,125,0.3);color:var(--accent-localwp);font-size:0.68rem;font-weight:600;padding:3px 10px;border-radius:20px; }
+
+        /* ── HERO ── */
+        .hero-section { min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 20px 80px;position:relative; }
+        .hero-section::before { content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:radial-gradient(circle,var(--glow-primary) 0%,transparent 70%);pointer-events:none; }
+        .hero-badge { display:inline-flex;align-items:center;gap:8px;background:rgba(225,112,85,0.12);border:1px solid rgba(225,112,85,0.25);padding:8px 20px;border-radius:50px;font-size:1.1rem;color:var(--accent-secondary);margin-bottom:1.2rem;animation:fadeInDown 0.8s ease; }
+        .hero-tech-badges { display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:2rem;animation:fadeInDown 0.8s ease 0.15s backwards; }
+        .tech-badge { display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:50px;font-size:0.98rem;font-weight:600;border:1px solid; }
+        .tech-badge.localwp { background:rgba(81,226,125,0.08);border-color:rgba(81,226,125,0.25);color:var(--accent-localwp); }
+        .tech-badge.elementor { background:rgba(225,112,85,0.08);border-color:rgba(225,112,85,0.25);color:var(--accent-secondary); }
+        .tech-badge.free { background:rgba(253,203,110,0.08);border-color:rgba(253,203,110,0.25);color:var(--accent-warning); }
+        .hero-title { font-family:var(--font-display);font-weight:800;font-size:clamp(2.2rem,5vw,4rem);line-height:1.15;margin-bottom:1.5rem;animation:fadeInUp 0.8s ease 0.2s backwards; }
+        .hero-title .gradient-text { background:linear-gradient(135deg,var(--accent-primary) 0%,var(--accent-cool) 50%,var(--accent-localwp) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+        .hero-subtitle { font-size:1.2rem;color:var(--text-secondary);max-width:700px;margin:0 auto 2.5rem;animation:fadeInUp 0.8s ease 0.4s backwards; }
+        .hero-stats { display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;animation:fadeInUp 0.8s ease 0.6s backwards; }
+        .hero-stat { text-align:center; }
+        .hero-stat-number { font-family:var(--font-display);font-weight:700;font-size:1.8rem;color:var(--accent-primary); }
+        .hero-stat-label { font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px; }
+
+        /* ── SIDEBAR ── */
+        .sidebar-nav { position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:999;padding:1rem 0.7rem;display:flex;flex-direction:column;gap:4px; }
+        .sidebar-dot { width:10px;height:10px;border-radius:50%;background:var(--text-muted);border:none;cursor:pointer;transition:all 0.3s ease;position:relative; }
+        .sidebar-dot.active { background:var(--accent-primary);box-shadow:0 0 12px var(--glow-primary);transform:scale(1.3); }
+        .sidebar-dot:hover::after { content:attr(data-label);position:absolute;left:24px;top:50%;transform:translateY(-50%);background:var(--bg-card);color:var(--text-primary);padding:4px 12px;border-radius:6px;font-size:0.72rem;white-space:nowrap;border:1px solid var(--border-color); }
+        @media(max-width:768px){ .sidebar-nav{display:none;} }
+
+        /* ── SECTIONS ── */
+        .tuto-section { padding:5rem 0;position:relative; }
+        .section-number { font-family:var(--font-display);font-weight:800;font-size:6rem;color:rgba(225,112,85,0.06);position:absolute;top:2rem;right:2rem;line-height:1;pointer-events:none;user-select:none; }
+        .section-header { margin-bottom:3rem; }
+        .section-tag { display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;color:var(--accent-success);text-transform:uppercase;letter-spacing:2px;margin-bottom:1rem; }
+        .section-tag i { font-size:0.65rem; }
+        .section-title { font-family:var(--font-display);font-weight:700;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.2;margin-bottom:0.8rem; }
+        .section-desc { color:var(--text-secondary);font-size:1rem;max-width:700px; }
+
+        /* ── STEP CARD ── */
+        .step-card { background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:2rem;margin-bottom:1.5rem;position:relative;transition:all 0.4s ease;overflow:hidden; }
+        .step-card::before { content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-cool));opacity:0;transition:opacity 0.3s ease; }
+        .step-card:hover { border-color:rgba(225,112,85,0.3);transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,0.3); }
+        .step-card:hover::before { opacity:1; }
+        .step-card.completed { border-color:rgba(0,206,201,0.3); }
+        .step-card.completed::before { background:var(--accent-success);opacity:1; }
+        .step-card.localwp-step { border-color:rgba(81,226,125,0.15); }
+        .step-card.localwp-step::before { background:linear-gradient(90deg,var(--accent-localwp),var(--accent-success)); }
+
+        .step-header { display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.2rem;cursor:pointer; }
+        .step-number-badge { min-width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--accent-primary),rgba(225,112,85,0.5));border-radius:12px;font-family:var(--font-display);font-weight:700;font-size:1.2rem;color:white;flex-shrink:0; }
+        .step-number-badge.localwp-badge { background:linear-gradient(135deg,var(--accent-localwp),rgba(81,226,125,0.5)); }
+        .step-number-badge.cool-badge { background:linear-gradient(135deg,var(--accent-cool),rgba(116,185,255,0.5)); }
+        .step-card.completed .step-number-badge { background:linear-gradient(135deg,var(--accent-success),rgba(0,206,201,0.5)); }
+
+        .step-title-area { flex:1; }
+        .step-title { font-family:var(--font-display);font-weight:600;font-size:1.15rem;margin-bottom:0.2rem; }
+        .step-time { font-size:0.95rem;color:var(--text-muted); }
+        .step-time i { margin-right:4px; }
+        .step-toggle { width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:rgba(225,112,85,0.1);border-radius:10px;color:var(--accent-secondary);transition:all 0.3s ease;cursor:pointer;border:none;flex-shrink:0; }
+        .step-toggle i { transition:transform 0.3s ease; }
+        .step-toggle.open i { transform:rotate(180deg); }
+
+        .step-body { display:none;padding-top:0.5rem; }
+        .step-body.show { display:block;animation:fadeIn 0.4s ease; }
+
+        .instruction { display:flex;gap:0.8rem;padding:0.9rem 0;border-bottom:1px solid rgba(225,112,85,0.07);align-items:flex-start; }
+        .instruction:last-child { border-bottom:none; }
+        .instruction-icon { width:28px;height:28px;min-width:28px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:0.7rem;flex-shrink:0;margin-top:2px; }
+        .instruction-icon.click { background:rgba(225,112,85,0.15);color:var(--accent-primary); }
+        .instruction-icon.type { background:rgba(0,206,201,0.15);color:var(--accent-success); }
+        .instruction-icon.drag { background:rgba(116,185,255,0.15);color:var(--accent-cool); }
+        .instruction-icon.info { background:rgba(253,203,110,0.15);color:var(--accent-warning); }
+        .instruction-icon.setting { background:rgba(162,155,254,0.15);color:var(--accent-purple); }
+        .instruction-icon.localwp { background:rgba(81,226,125,0.15);color:var(--accent-localwp); }
+        .instruction-text { font-size:1.1rem;color:var(--text-secondary);line-height:1.65; }
+        .instruction-text strong { color:var(--text-primary);font-weight:600; }
+        .instruction-text code { background:rgba(225,112,85,0.12);color:var(--accent-secondary);padding:2px 8px;border-radius:5px;font-family:var(--font-mono);font-size:1.1rem; }
+        .instruction-text .localwp-url { background:rgba(81,226,125,0.1);color:var(--accent-localwp);padding:2px 8px;border-radius:5px;font-family:var(--font-mono);font-size:1.1rem;border:1px solid rgba(81,226,125,0.2); }
+
+        /* ── BOXES ── */
+        .tip-box { background:rgba(225,112,85,0.08);border-left:3px solid var(--accent-primary);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:1rem 1.2rem;margin:1rem 0;font-size:1.1rem;color:var(--text-secondary); }
+        .tip-box i { color:var(--accent-primary);margin-right:6px; }
+        .tip-box strong { color:var(--accent-secondary); }
+        .warning-box { background:rgba(231,76,60,0.08);border-left:3px solid var(--accent-danger);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:1rem 1.2rem;margin:1rem 0;font-size:1.1rem;color:var(--text-secondary); }
+        .warning-box i { color:var(--accent-danger);margin-right:6px; }
+        .success-box { background:rgba(0,206,201,0.08);border-left:3px solid var(--accent-success);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:1rem 1.2rem;margin:1rem 0;font-size:1.1rem;color:var(--text-secondary); }
+        .success-box i { color:var(--accent-success);margin-right:6px; }
+        .localwp-box { background:rgba(81,226,125,0.06);border-left:3px solid var(--accent-localwp);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:1rem 1.2rem;margin:1rem 0;font-size:1.1rem;color:var(--text-secondary); }
+        .localwp-box i { color:var(--accent-localwp);margin-right:6px; }
+        .localwp-box strong { color:var(--accent-localwp); }
+
+        /* ── PREVIEW ── */
+        .preview-mockup { background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius-lg);overflow:hidden;margin:1.5rem 0; }
+        .mockup-toolbar { display:flex;align-items:center;gap:6px;padding:10px 16px;background:rgba(0,0,0,0.3);border-bottom:1px solid var(--border-color); }
+        .mockup-dot { width:10px;height:10px;border-radius:50%; }
+        .mockup-dot.red { background:#ff5f57; } .mockup-dot.yellow { background:#ffbd2e; } .mockup-dot.green { background:#28ca41; }
+        .mockup-url { flex:1;text-align:center;font-size:0.7rem;color:var(--text-muted);font-family:var(--font-mono); }
+        .mockup-content { padding:0;min-height:200px; }
+
+        /* ── PREREQ ── */
+        .prereq-card { background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:1.5rem;text-align:center;transition:all 0.3s ease;height:100%; }
+        .prereq-card:hover { border-color:rgba(225,112,85,0.3);transform:translateY(-3px); }
+        .prereq-icon { width:56px;height:56px;display:flex;align-items:center;justify-content:center;border-radius:14px;font-size:1.4rem;margin:0 auto 1rem; }
+        .prereq-card h5 { font-family:var(--font-display);font-weight:600;font-size:1rem;margin-bottom:0.4rem; }
+        .prereq-card p { font-size:0.82rem;color:var(--text-muted);margin:0; }
+
+        /* ── CHECKLIST ── */
+        .check-item { display:flex;align-items:center;gap:0.7rem;padding:0.5rem 0;cursor:pointer;user-select:none; }
+        .check-box { width:22px;height:22px;min-width:22px;border:2px solid var(--text-muted);border-radius:6px;display:flex;align-items:center;justify-content:center;transition:all 0.3s ease;font-size:0.65rem;color:transparent; }
+        .check-item.checked .check-box { background:var(--accent-success);border-color:var(--accent-success);color:white; }
+        .check-item.checked .check-label { text-decoration:line-through;color:var(--text-muted); }
+        .check-label { font-size:0.9rem;color:var(--text-secondary);transition:all 0.3s ease; }
+
+        /* ── TABLE ── */
+        .recap-table { width:100%;border-collapse:separate;border-spacing:0;margin:1rem 0;font-size:1.1rem; }
+        .recap-table th { background:rgba(225,112,85,0.12);color:var(--accent-secondary);padding:0.7rem 1rem;text-align:left;font-weight:600;border-bottom:1px solid var(--border-color); }
+        .recap-table th:first-child { border-radius:var(--radius-sm) 0 0 0; }
+        .recap-table th:last-child { border-radius:0 var(--radius-sm) 0 0; }
+        .recap-table td { padding:0.6rem 1rem;border-bottom:1px solid rgba(225,112,85,0.05);color:var(--text-secondary); }
+        .recap-table tr:last-child td { border-bottom:none; }
+        .recap-table tr:hover td { background:rgba(225,112,85,0.04); }
+
+        /* ── PROGRESS ── */
+        .progress-panel { background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:1.5rem;position:sticky;top:90px; }
+        .progress-title { font-family:var(--font-display);font-weight:700;font-size:1.1rem;margin-bottom:1rem; }
+        .progress-bar-wrap { height:8px;background:rgba(225,112,85,0.1);border-radius:10px;overflow:hidden;margin-bottom:0.5rem; }
+        .progress-bar-fill { height:100%;background:linear-gradient(90deg,var(--accent-primary),var(--accent-cool));border-radius:10px;transition:width 0.5s ease;width:0%; }
+        .progress-text { font-size:0.78rem;color:var(--text-muted);margin-bottom:1.5rem; }
+        .progress-section-item { display:flex;align-items:center;gap:0.6rem;padding:0.55rem 0;font-size:0.85rem;color:var(--text-secondary);cursor:pointer;transition:color 0.3s ease; }
+        .progress-section-item:hover { color:var(--text-primary); }
+        .progress-section-item .status-icon { width:20px;height:20px;min-width:20px;border-radius:50%;border:2px solid var(--text-muted);display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:transparent;transition:all 0.3s ease; }
+        .progress-section-item.done .status-icon { background:var(--accent-success);border-color:var(--accent-success);color:white; }
+        .progress-section-item.active-section .status-icon { border-color:var(--accent-primary);box-shadow:0 0 8px var(--glow-primary); }
+
+        .section-divider { height:1px;background:linear-gradient(90deg,transparent,var(--border-color),transparent);margin:1rem 0; }
+
+        /* ── PORTFOLIO GRID PREVIEW ── */
+        .portfolio-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:1rem; }
+        .portfolio-item { background:linear-gradient(135deg,rgba(225,112,85,0.15),rgba(116,185,255,0.1));border-radius:10px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;font-size:0.7rem;color:var(--text-muted);border:1px solid rgba(225,112,85,0.1);transition:all 0.3s ease; }
+        .portfolio-item:hover { border-color:rgba(225,112,85,0.3);transform:scale(1.02); }
+        .portfolio-item i { font-size:1.5rem;color:var(--accent-primary);opacity:0.5; }
+
+        /* ── SKILL BAR PREVIEW ── */
+        .skill-bar-preview { margin:0.5rem 0; }
+        .skill-bar-label { display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-secondary);margin-bottom:4px; }
+        .skill-bar-track { height:10px;background:rgba(225,112,85,0.1);border-radius:10px;overflow:hidden; }
+        .skill-bar-fill { height:100%;border-radius:10px;transition:width 1.5s ease; }
+
+        /* ── FOOTER ── */
+        .site-footer { background:var(--bg-secondary);border-top:1px solid var(--border-color);padding:3rem 0 2rem;text-align:center; }
+        .footer-brand { font-family:var(--font-display);font-weight:700;font-size:1.2rem;color:var(--text-primary);margin-bottom:0.5rem; }
+        .footer-brand span { color:var(--accent-primary); }
+        .footer-text { font-size:0.82rem;color:var(--text-muted); }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
+        @keyframes fadeInDown { from{opacity:0;transform:translateY(-15px);} to{opacity:1;transform:translateY(0);} }
+        .fade-in-view { opacity:0;transform:translateY(25px);transition:opacity 0.6s ease,transform 0.6s ease; }
+        .fade-in-view.visible { opacity:1;transform:translateY(0); }
+        .confetti-container { position:fixed;inset:0;pointer-events:none;z-index:9999; }
+        .confetti-piece { position:absolute;width:10px;height:10px;top:-10px;animation:confettiFall 3s ease-in forwards; }
+        @keyframes confettiFall { 0%{transform:translateY(0) rotate(0deg);opacity:1;} 100%{transform:translateY(110vh) rotate(720deg);opacity:0;} }
+        @media(max-width:992px){ .progress-panel{position:relative;top:0;margin-bottom:2rem;} }
+        @media(max-width:576px){ .step-card{padding:1.3rem;} .hero-stats{gap:1.5rem;} .section-number{font-size:4rem;} .portfolio-grid{grid-template-columns:repeat(2,1fr);} }
+    </style>
+</head>
+<body>
+
+<div class="ambient-bg"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+
+<!-- TOP NAV -->
+<nav class="top-nav" id="topNav">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="#" class="nav-brand"><span>MODE</span>83 — Portfolio CM</a>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge-localwp"><i class="fas fa-server me-1"></i>LocalWP</span>
+                <span class="badge-exo">EXERCICE 2</span>
+                <span class="d-none d-md-inline" style="font-size:0.78rem;color:var(--text-muted);" id="progressPercent">0%</span>
+            </div>
+        </div>
+    </div>
+    <div class="nav-progress-wrap"><div class="nav-progress-bar" id="navProgressBar"></div></div>
+</nav>
+
+<div class="sidebar-nav" id="sidebarNav"></div>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<header class="hero-section" id="hero">
+    <div class="container">
+        <div class="hero-badge"><i class="fas fa-graduation-cap"></i> Formation CM — MODE 83 Draguignan</div>
+        <div class="hero-tech-badges">
+            <span class="tech-badge localwp"><i class="fas fa-server"></i> Local WP</span>
+            <span class="tech-badge elementor"><i class="fab fa-wordpress"></i> Elementor gratuit</span>
+            <span class="tech-badge free"><i class="fas fa-tag"></i> 100% gratuit</span>
+        </div>
+        <h1 class="hero-title">Créer une <span class="gradient-text">page portfolio<br>de Community Manager</span></h1>
+        <p class="hero-subtitle">Guide pas à pas ultra-détaillé pour grands débutants.<br>Mettez en valeur vos réalisations CM avec une galerie, des fiches projets en accordéon et des barres de compétences animées.</p>
+        <div class="hero-stats">
+            <div class="hero-stat"><div class="hero-stat-number">4</div><div class="hero-stat-label">Sections</div></div>
+            <div class="hero-stat"><div class="hero-stat-number">~25</div><div class="hero-stat-label">Minutes</div></div>
+            <div class="hero-stat"><div class="hero-stat-number">30+</div><div class="hero-stat-label">Étapes</div></div>
+            <div class="hero-stat"><div class="hero-stat-number">0€</div><div class="hero-stat-label">Coût</div></div>
+        </div>
+    </div>
+</header>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<main class="container py-4">
+<div class="row">
+<div class="col-lg-8">
+
+    <!-- ═══════ SECTION 0 : PRÉREQUIS ═══════ -->
+    <section class="tuto-section fade-in-view" id="section-prerequis" data-nav-label="Prérequis">
+        <span class="section-number">00</span>
+        <div class="section-header">
+            <div class="section-tag"><i class="fas fa-circle"></i> Avant de commencer</div>
+            <h2 class="section-title">Prérequis &amp; Préparation</h2>
+            <p class="section-desc">Vérifiez votre environnement de travail et préparez vos ressources visuelles.</p>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6 col-md-3">
+                <div class="prereq-card" style="border-color:rgba(81,226,125,0.15);">
+                    <div class="prereq-icon" style="background:rgba(81,226,125,0.12);color:var(--accent-localwp);"><i class="fas fa-server"></i></div>
+                    <h5>Local WP</h5>
+                    <p>Site créé &amp; démarré</p>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="prereq-card">
+                    <div class="prereq-icon" style="background:rgba(225,112,85,0.12);color:var(--accent-primary);"><i class="fas fa-puzzle-piece"></i></div>
+                    <h5>Elementor Free</h5>
+                    <p>Installé &amp; activé</p>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="prereq-card">
+                    <div class="prereq-icon" style="background:rgba(116,185,255,0.12);color:var(--accent-cool);"><i class="fas fa-images"></i></div>
+                    <h5>6 Images</h5>
+                    <p>Visuels de campagnes</p>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="prereq-card">
+                    <div class="prereq-icon" style="background:rgba(253,203,110,0.12);color:var(--accent-warning);"><i class="fas fa-file-alt"></i></div>
+                    <h5>Textes projets</h5>
+                    <p>Client, objectif, résultats</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 0.1 : Vérifier LocalWP -->
+        <div class="step-card localwp-step" data-step="0.1">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge localwp-badge"><i class="fas fa-check-circle"></i></div>
+                <div class="step-title-area">
+                    <div class="step-title">Vérifier Local WP + Elementor</div>
+                    <div class="step-time"><i class="fas fa-clock"></i> 1 min</div>
+                </div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body">
+                <div class="instruction">
+                    <div class="instruction-icon localwp"><i class="fas fa-desktop"></i></div>
+                    <div class="instruction-text"><strong>Ouvrez Local WP</strong> sur votre ordinateur. Vérifiez que votre site (par exemple <strong>"Agence CM"</strong> créé à l'Exercice 1) est bien <strong>démarré</strong> — un point vert "Running" doit apparaître.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon localwp"><i class="fas fa-desktop"></i></div>
+                    <div class="instruction-text">Si vous n'avez pas encore de site, créez-en un : cliquez sur <strong>"+"</strong> → <strong>"Create a new site"</strong> → nommez-le <code>Portfolio CM</code> → <strong>"Preferred"</strong> → Username : <code>admin</code> / Password : <code>admin</code> → <strong>"Add Site"</strong>.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text">Cliquez sur <strong>"WP Admin"</strong> dans Local WP pour ouvrir le tableau de bord WordPress dans votre navigateur.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon info"><i class="fas fa-info"></i></div>
+                    <div class="instruction-text">Vérifiez qu'Elementor est bien installé : dans le menu de gauche, vous devez voir <strong>"Elementor"</strong>. Si ce n'est pas le cas, allez dans <strong>Extensions → Ajouter</strong> → cherchez <strong>"Elementor"</strong> → <strong>Installer</strong> → <strong>Activer</strong>.</div>
+                </div>
+                <div class="localwp-box">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Rappel :</strong> L'adresse de votre site est <span class="localwp-url">http://votre-site.local/wp-admin/</span>. Elle ne fonctionne que sur votre PC. Identifiants : <code>admin</code> / <code>admin</code>.
+                </div>
+            </div>
+        </div>
+
+        <!-- 0.2 : Préparer les images -->
+        <div class="step-card" data-step="0.2">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge cool-badge"><i class="fas fa-images"></i></div>
+                <div class="step-title-area">
+                    <div class="step-title">Préparer 6 visuels de campagnes fictives</div>
+                    <div class="step-time"><i class="fas fa-clock"></i> 3 min</div>
+                </div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body">
+                <div class="instruction">
+                    <div class="instruction-icon info"><i class="fas fa-info"></i></div>
+                    <div class="instruction-text">Pour votre galerie, vous aurez besoin de <strong>6 images</strong> représentant des visuels de campagnes de community management. Voici 3 façons de les obtenir :</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text"><strong>Option 1 — Unsplash (recommandé) :</strong> Allez sur <strong>unsplash.com</strong> et cherchez ces termes :
+                        <br>• <code>social media marketing</code> (2 images)
+                        <br>• <code>instagram feed</code> (2 images)
+                        <br>• <code>digital advertising</code> (1 image)
+                        <br>• <code>content creation</code> (1 image)
+                        <br>Téléchargez-les et enregistrez-les dans un dossier sur votre bureau.
+                    </div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon info"><i class="fas fa-info"></i></div>
+                    <div class="instruction-text"><strong>Option 2 — Canva :</strong> Créez 6 visuels rapides dans Canva (format Instagram 1080×1080) avec des faux posts de campagne.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon info"><i class="fas fa-info"></i></div>
+                    <div class="instruction-text"><strong>Option 3 — Placeholder :</strong> Utilisez <strong>placehold.co</strong> → les images seront des rectangles gris avec des dimensions. Vous les remplacerez plus tard par de vrais visuels.</div>
+                </div>
+                <div class="tip-box">
+                    <i class="fas fa-lightbulb"></i>
+                    <strong>Astuce nommage :</strong> Nommez vos fichiers de manière claire : <code>campagne-instagram-restaurant.jpg</code>, <code>pub-facebook-mode.jpg</code>, etc. Cela facilite le travail dans la Médiathèque WordPress.
+                </div>
+            </div>
+        </div>
+
+        <!-- 0.3 : Créer la page -->
+        <div class="step-card" data-step="0.3">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge"><i class="fas fa-file-alt"></i></div>
+                <div class="step-title-area">
+                    <div class="step-title">Créer la page &amp; Ouvrir Elementor</div>
+                    <div class="step-time"><i class="fas fa-clock"></i> 1 min</div>
+                </div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body">
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text">Dans WordPress : <strong>Pages → Ajouter une nouvelle page</strong>.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon type"><i class="fas fa-keyboard"></i></div>
+                    <div class="instruction-text">Titre : <code>Mon Portfolio CM</code></div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text">Panneau droit → <strong>Modèle :</strong> sélectionnez <strong>"Elementor Pleine largeur"</strong> (Elementor Full Width).</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text">Cliquez sur <strong>"Modifier avec Elementor"</strong>. L'éditeur visuel s'ouvre avec le panneau de widgets à gauche et l'aperçu au centre.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ═══════ SECTION 1 : INTRODUCTION ═══════ -->
+    <section class="tuto-section fade-in-view" id="section-intro" data-nav-label="Introduction">
+        <span class="section-number">01</span>
+        <div class="section-header">
+            <div class="section-tag"><i class="fas fa-circle"></i> Section 1</div>
+            <h2 class="section-title">Section d'Introduction</h2>
+            <p class="section-desc">Un titre accrocheur et un texte de présentation pour vous présenter en tant que Community Manager.</p>
+        </div>
+
+        <div class="preview-mockup mb-4">
+            <div class="mockup-toolbar">
+                <div class="mockup-dot red"></div><div class="mockup-dot yellow"></div><div class="mockup-dot green"></div>
+                <div class="mockup-url">portfolio-cm.local</div>
+            </div>
+            <div class="mockup-content" style="background:linear-gradient(135deg,#1a1a2e,#16213e);min-height:200px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:2.5rem;">
+                <div style="font-family:var(--font-display);font-weight:800;font-size:clamp(1.3rem,3vw,2rem);color:white;text-align:center;">Mon Portfolio</div>
+                <div style="width:50px;height:3px;background:var(--accent-primary);border-radius:3px;"></div>
+                <div style="font-size:0.82rem;color:rgba(255,255,255,0.6);text-align:center;max-width:500px;line-height:1.6;">Community Manager passionné, je crée des stratégies digitales sur-mesure qui génèrent engagement et croissance pour mes clients.</div>
+            </div>
+        </div>
+
+        <!-- 1.1 -->
+        <div class="step-card" data-step="1.1">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge">1.1</div>
+                <div class="step-title-area">
+                    <div class="step-title">Créer la section + Arrière-plan élégant</div>
+                    <div class="step-time"><i class="fas fa-clock"></i> 1 min 30</div>
+                </div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body">
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text">Cliquez sur le <strong>« + »</strong> rouge au centre → choisissez <strong>1 colonne</strong>.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text">Éditez la section (clic sur l'icône ✏️ dans la barre bleue en haut de la section).</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text">Onglet <strong>Style → Arrière-plan</strong> : cliquez sur le <strong>pinceau 🖌️</strong> (type classique) et choisissez la couleur <code>#1A1A2E</code> (bleu très foncé, presque noir) pour un look professionnel et sobre.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text">Onglet <strong>Avancé → Rembourrage (Padding) :</strong> mettez <code>80</code>px en haut et <code>80</code>px en bas pour donner de l'espace et de l'élégance.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1.2 -->
+        <div class="step-card" data-step="1.2">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge">1.2</div>
+                <div class="step-title-area">
+                    <div class="step-title">Ajouter le titre "Mon Portfolio"</div>
+                    <div class="step-time"><i class="fas fa-clock"></i> 1 min</div>
+                </div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body">
+                <div class="instruction">
+                    <div class="instruction-icon drag"><i class="fas fa-hand-pointer"></i></div>
+                    <div class="instruction-text">Glissez le widget <strong>« Titre »</strong> (Heading) dans la section.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon type"><i class="fas fa-keyboard"></i></div>
+                    <div class="instruction-text">Tapez : <code>Mon Portfolio</code></div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text">Onglet Contenu :
+                        <br>• <strong>Balise HTML :</strong> H1
+                        <br>• <strong>Alignement :</strong> Centre
+                    </div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text">Onglet <strong>Style</strong> :
+                        <br>• <strong>Couleur :</strong> <code>#FFFFFF</code>
+                        <br>• <strong>Typographie → Famille :</strong> <code>Montserrat</code> | <strong>Taille :</strong> <code>48</code>px | <strong>Graisse :</strong> <code>800</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1.3 -->
+        <div class="step-card" data-step="1.3">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge">1.3</div>
+                <div class="step-title-area">
+                    <div class="step-title">Ajouter le séparateur décoratif</div>
+                    <div class="step-time"><i class="fas fa-clock"></i> 30 sec</div>
+                </div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body">
+                <div class="instruction">
+                    <div class="instruction-icon drag"><i class="fas fa-hand-pointer"></i></div>
+                    <div class="instruction-text">Glissez le widget <strong>« Séparateur »</strong> (Divider) sous le titre.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text">Onglet <strong>Style</strong> :
+                        <br>• <strong>Couleur :</strong> <code>#E17055</code> (orange/corail — une couleur qui se démarque)
+                        <br>• <strong>Largeur :</strong> <code>80</code>px (un petit trait, pas toute la largeur)
+                        <br>• <strong>Épaisseur (Poids) :</strong> <code>4</code>px
+                        <br>• <strong>Alignement :</strong> Centre
+                    </div>
+                </div>
+                <div class="tip-box">
+                    <i class="fas fa-lightbulb"></i>
+                    <strong>Le séparateur</strong> est un élément de design subtil mais élégant. Ce petit trait coloré entre le titre et le texte donne un aspect professionnel à la page.
+                </div>
+            </div>
+        </div>
+
+        <!-- 1.4 -->
+        <div class="step-card" data-step="1.4">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge">1.4</div>
+                <div class="step-title-area">
+                    <div class="step-title">Ajouter le texte de présentation</div>
+                    <div class="step-time"><i class="fas fa-clock"></i> 1 min</div>
+                </div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body">
+                <div class="instruction">
+                    <div class="instruction-icon drag"><i class="fas fa-hand-pointer"></i></div>
+                    <div class="instruction-text">Glissez le widget <strong>« Éditeur de texte »</strong> (Text Editor) sous le séparateur.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon type"><i class="fas fa-keyboard"></i></div>
+                    <div class="instruction-text">Tapez votre présentation : <code>Community Manager passionné et créatif, je conçois des stratégies digitales sur-mesure qui génèrent engagement, visibilité et croissance pour mes clients. Découvrez ci-dessous une sélection de mes réalisations.</code></div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text">Onglet Contenu → <strong>Alignement :</strong> Centre. Puis onglet <strong>Style</strong> :
+                        <br>• <strong>Couleur :</strong> <code>#B0B0C8</code> (gris clair pour contraster avec le fond sombre)
+                        <br>• <strong>Typographie → Taille :</strong> <code>18</code>px
+                    </div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text">Onglet <strong>Avancé → Marge (Margin) :</strong> mettez <code>600</code>px pour la <strong>largeur maximale</strong> du widget — ou bien dans <strong>Avancé → Rembourrage</strong>, ajoutez <code>100</code>px à gauche et à droite pour que le texte ne soit pas trop large.</div>
+                </div>
+                <div class="success-box">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Section d'introduction terminée !</strong> Un beau titre blanc sur fond sombre, un séparateur coloré et un texte de présentation centré.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ═══════ SECTION 2 : GALERIE ═══════ -->
+    <section class="tuto-section fade-in-view" id="section-galerie" data-nav-label="Galerie Projets">
+        <span class="section-number">02</span>
+        <div class="section-header">
+            <div class="section-tag"><i class="fas fa-circle"></i> Section 2</div>
+            <h2 class="section-title">Galerie de Projets — Grille 3 Colonnes</h2>
+            <p class="section-desc">Une grille visuelle de vos meilleures campagnes avec légendes descriptives.</p>
+        </div>
+
+        <div class="preview-mockup mb-4">
+            <div class="mockup-toolbar">
+                <div class="mockup-dot red"></div><div class="mockup-dot yellow"></div><div class="mockup-dot green"></div>
+                <div class="mockup-url">portfolio-cm.local/#galerie</div>
+            </div>
+            <div class="mockup-content" style="background:var(--bg-secondary);padding:1.5rem;">
+                <div style="text-align:center;font-family:var(--font-display);font-weight:700;font-size:1.1rem;margin-bottom:1rem;">Mes Réalisations</div>
+                <div class="portfolio-grid">
+                    <div class="portfolio-item"><i class="fas fa-utensils"></i><span>Restaurant Le Provençal</span></div>
+                    <div class="portfolio-item"><i class="fas fa-shopping-bag"></i><span>FashionStore</span></div>
+                    <div class="portfolio-item"><i class="fas fa-dumbbell"></i><span>FitClub Gym</span></div>
+                    <div class="portfolio-item"><i class="fas fa-spa"></i><span>Zen & Beauty</span></div>
+                    <div class="portfolio-item"><i class="fas fa-home"></i><span>Immo Premium</span></div>
+                    <div class="portfolio-item"><i class="fas fa-laptop-code"></i><span>TechStart SaaS</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2.1 -->
+        <div class="step-card" data-step="2.1">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge">2.1</div>
+                <div class="step-title-area">
+                    <div class="step-title">Créer la section + Titre "Mes Réalisations"</div>
+                    <div class="step-time"><i class="fas fa-clock"></i> 1 min</div>
+                </div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body">
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text">Cliquez sur le <strong>« + »</strong> → <strong>1 colonne</strong>.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon drag"><i class="fas fa-hand-pointer"></i></div>
+                    <div class="instruction-text">Glissez un widget <strong>Titre</strong> → tapez : <code>Mes Réalisations</code></div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text"><strong>H2</strong>, Centre, Style → Taille <code>36</code>px, Graisse <code>700</code>.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text">Onglet <strong>Avancé → Marge (Margin) :</strong> <code>40</code>px en bas pour espacer du titre à la galerie.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2.2 -->
+        <div class="step-card" data-step="2.2">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge">2.2</div>
+                <div class="step-title-area">
+                    <div class="step-title">Créer la grille 3 colonnes d'images</div>
+                    <div class="step-time"><i class="fas fa-clock"></i> 5 min</div>
+                </div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body">
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text">Cliquez sur le <strong>« + »</strong> → choisissez la structure à <strong>3 colonnes</strong>. Cela crée la <strong>1ère ligne</strong> de votre grille (3 images côte à côte).</div>
+                </div>
+
+                <div class="tip-box">
+                    <i class="fas fa-lightbulb"></i>
+                    <strong>Plan de la grille :</strong> Nous allons créer 2 lignes de 3 images = 6 projets au total. D'abord 1 section de 3 colonnes (ligne 1), puis 1 autre section de 3 colonnes (ligne 2).
+                </div>
+
+                <div class="instruction">
+                    <div class="instruction-icon drag"><i class="fas fa-hand-pointer"></i></div>
+                    <div class="instruction-text">Glissez le widget <strong>« Image »</strong> dans la <strong>1ère colonne</strong> (gauche).</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text">Cliquez sur <strong>"Choisir une image"</strong> → <strong>Téléverser des fichiers</strong> → sélectionnez votre 1er visuel de campagne → <strong>"Insérer le média"</strong>.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text">Configurez l'image :
+                        <br>• <strong>Taille de l'image :</strong> Large ou Taille originale
+                        <br>• <strong>Légende :</strong> activez la légende en tapant dans le champ <strong>"Légende"</strong> (Caption) : <code>Restaurant Le Provençal — Campagne Instagram</code>
+                        <br>• <strong>Alignement :</strong> Centre
+                    </div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon info"><i class="fas fa-info"></i></div>
+                    <div class="instruction-text"><strong>Répétez pour les colonnes 2 et 3</strong> de la même section : glissez un widget Image dans chaque colonne, téléversez un visuel différent, et ajoutez une légende descriptive :</div>
+                </div>
+
+                <table class="recap-table">
+                    <thead><tr><th>Colonne</th><th>Projet</th><th>Légende</th></tr></thead>
+                    <tbody>
+                        <tr><td>1</td><td>Restaurant</td><td><code>Restaurant Le Provençal — Campagne Instagram</code></td></tr>
+                        <tr><td>2</td><td>Mode</td><td><code>FashionStore — Stratégie réseaux sociaux</code></td></tr>
+                        <tr><td>3</td><td>Sport</td><td><code>FitClub Gym — Lancement TikTok</code></td></tr>
+                    </tbody>
+                </table>
+
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text">Maintenant, créez la <strong>2ème ligne</strong> : cliquez sur le <strong>« + »</strong> sous la 1ère grille → <strong>3 colonnes</strong>. Ajoutez 3 autres widgets Image avec les visuels restants :</div>
+                </div>
+
+                <table class="recap-table">
+                    <thead><tr><th>Colonne</th><th>Projet</th><th>Légende</th></tr></thead>
+                    <tbody>
+                        <tr><td>4</td><td>Beauté</td><td><code>Zen & Beauty — Création de contenu</code></td></tr>
+                        <tr><td>5</td><td>Immobilier</td><td><code>Immo Premium — Publicité Facebook Ads</code></td></tr>
+                        <tr><td>6</td><td>Tech</td><td><code>TechStart SaaS — Campagne LinkedIn B2B</code></td></tr>
+                    </tbody>
+                </table>
+
+                <div class="tip-box">
+                    <i class="fas fa-lightbulb"></i>
+                    <strong>Style des légendes :</strong> Pour personnaliser le style de vos légendes, cliquez sur une image → onglet <strong>Style → Légende</strong> : vous pouvez changer la couleur, la taille de police et l'espacement.
+                </div>
+
+                <div class="localwp-box">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Version gratuite :</strong> Le widget Image est bien inclus dans Elementor gratuit. Pour une galerie encore plus avancée (lightbox, filtres), il existe le widget "Galerie de base" (Basic Gallery), aussi gratuit, mais le rendu avec des widgets Image individuels est plus contrôlable.
+                </div>
+
+                <div class="success-box">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Galerie terminée !</strong> Vous avez 6 visuels de campagnes organisés en 2 lignes de 3, chacun avec une légende décrivant le projet.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ═══════ SECTION 3 : ACCORDÉON DÉTAILS ═══════ -->
+    <section class="tuto-section fade-in-view" id="section-accordeon" data-nav-label="Détails Projets">
+        <span class="section-number">03</span>
+        <div class="section-header">
+            <div class="section-tag"><i class="fas fa-circle"></i> Section 3</div>
+            <h2 class="section-title">Section Détails — Accordéons Projets</h2>
+            <p class="section-desc">Pour chaque projet, un accordéon dépliable avec Client, Objectif, Stratégie et Résultats.</p>
+        </div>
+
+        <div class="preview-mockup mb-4">
+            <div class="mockup-toolbar">
+                <div class="mockup-dot red"></div><div class="mockup-dot yellow"></div><div class="mockup-dot green"></div>
+                <div class="mockup-url">portfolio-cm.local/#details</div>
+            </div>
+            <div class="mockup-content" style="background:var(--bg-secondary);padding:1.5rem;">
+                <div style="text-align:center;font-family:var(--font-display);font-weight:700;font-size:1rem;margin-bottom:1rem;">Détails des Projets</div>
+                <div style="max-width:500px;margin:0 auto;">
+                    <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:8px;margin-bottom:6px;padding:10px 14px;font-size:0.82rem;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;color:var(--text-primary);font-weight:600;">
+                            <span><i class="fas fa-utensils" style="color:var(--accent-primary);margin-right:8px;"></i>Restaurant Le Provençal</span>
+                            <i class="fas fa-chevron-down" style="font-size:0.6rem;color:var(--text-muted);"></i>
+                        </div>
+                    </div>
+                    <div style="background:var(--bg-card);border:1px solid rgba(225,112,85,0.25);border-radius:8px;margin-bottom:6px;padding:10px 14px;font-size:0.78rem;">
+                        <div style="color:var(--accent-primary);font-weight:600;margin-bottom:6px;"><i class="fas fa-shopping-bag" style="margin-right:6px;"></i>FashionStore <i class="fas fa-chevron-up" style="float:right;font-size:0.6rem;color:var(--text-muted);"></i></div>
+                        <div style="color:var(--text-muted);line-height:1.5;font-size:0.72rem;">
+                            <strong style="color:var(--text-secondary);">Client :</strong> FashionStore Paris<br>
+                            <strong style="color:var(--text-secondary);">Objectif :</strong> +50% engagement Instagram<br>
+                            <strong style="color:var(--text-secondary);">Stratégie :</strong> Contenu UGC + Reels<br>
+                            <strong style="color:var(--text-secondary);">Résultats :</strong> +72% en 2 mois
+                        </div>
+                    </div>
+                    <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:8px;padding:10px 14px;font-size:0.82rem;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;color:var(--text-primary);font-weight:600;">
+                            <span><i class="fas fa-dumbbell" style="color:var(--accent-primary);margin-right:8px;"></i>FitClub Gym</span>
+                            <i class="fas fa-chevron-down" style="font-size:0.6rem;color:var(--text-muted);"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3.1 -->
+        <div class="step-card" data-step="3.1">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge">3.1</div>
+                <div class="step-title-area">
+                    <div class="step-title">Créer la section + Titre "Détails des Projets"</div>
+                    <div class="step-time"><i class="fas fa-clock"></i> 1 min</div>
+                </div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body">
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text">Cliquez sur le <strong>« + »</strong> → <strong>1 colonne</strong>.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon drag"><i class="fas fa-hand-pointer"></i></div>
+                    <div class="instruction-text">Glissez un widget <strong>Titre</strong>. Tapez : <code>Détails des Projets</code></div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text"><strong>H2</strong>, Centre, Taille <code>36</code>px, Graisse <code>700</code>. Marge bas : <code>30</code>px.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3.2 -->
+        <div class="step-card" data-step="3.2">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge">3.2</div>
+                <div class="step-title-area">
+                    <div class="step-title">Ajouter le 1er Accordéon — Projet Restaurant</div>
+                    <div class="step-time"><i class="fas fa-clock"></i> 3 min</div>
+                </div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body">
+                <div class="instruction">
+                    <div class="instruction-icon drag"><i class="fas fa-hand-pointer"></i></div>
+                    <div class="instruction-text">Dans le panneau de gauche, cherchez le widget <strong>« Accordéon »</strong> (Accordion). Glissez-le sous le titre.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon info"><i class="fas fa-info"></i></div>
+                    <div class="instruction-text"><strong>Comment fonctionne l'accordéon :</strong> Par défaut, il a 2 volets (onglets). Chaque volet a un <strong>titre</strong> (toujours visible) et un <strong>contenu</strong> (visible quand on clique). Le visiteur clique sur un titre pour voir le contenu correspondant.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text">Cliquez sur le <strong>1er volet</strong> ("Accordéon #1") pour l'ouvrir. Remplacez le titre par : <code>🍽️ Restaurant Le Provençal</code></div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon type"><i class="fas fa-keyboard"></i></div>
+                    <div class="instruction-text">Dans le <strong>contenu</strong> de ce volet, effacez le texte par défaut et tapez (sur plusieurs lignes) :
+                        <br><br><code><strong>Client :</strong> Restaurant Le Provençal, Draguignan</code>
+                        <br><code><strong>Objectif :</strong> Augmenter la visibilité locale et attirer de nouveaux clients via Instagram</code>
+                        <br><code><strong>Stratégie :</strong> Photos culinaires professionnelles, stories quotidiennes, partenariats avec des influenceurs food locaux, jeux concours</code>
+                        <br><code><strong>Résultats :</strong> +300% d'abonnés en 3 mois, +45% de réservations en ligne, 150 avis Google supplémentaires</code>
+                    </div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text">Cliquez sur le <strong>2ème volet</strong>. Remplacez le titre par : <code>👗 FashionStore Paris</code></div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon type"><i class="fas fa-keyboard"></i></div>
+                    <div class="instruction-text">Contenu :
+                        <br><code><strong>Client :</strong> FashionStore, boutique de mode en ligne</code>
+                        <br><code><strong>Objectif :</strong> Augmenter l'engagement Instagram de 50%</code>
+                        <br><code><strong>Stratégie :</strong> Contenu UGC (User Generated Content), Reels tendances, collaborations micro-influenceurs, calendrier éditorial hebdomadaire</code>
+                        <br><code><strong>Résultats :</strong> +72% d'engagement en 2 mois, 1200 nouveaux abonnés/mois, taux de conversion +25%</code>
+                    </div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text"><strong>Ajouter un 3ème volet :</strong> Cliquez sur le bouton <strong>"+ Ajouter un élément"</strong> (Add Item) en bas de la liste des volets dans le panneau gauche.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon type"><i class="fas fa-keyboard"></i></div>
+                    <div class="instruction-text">3ème volet → Titre : <code>💪 FitClub Gym</code>
+                        <br>Contenu :
+                        <br><code><strong>Client :</strong> FitClub Gym, salle de sport premium</code>
+                        <br><code><strong>Objectif :</strong> Lancer le compte TikTok et atteindre 10K abonnés</code>
+                        <br><code><strong>Stratégie :</strong> Vidéos avant/après, challenges fitness, témoignages clients en format court, musiques tendances</code>
+                        <br><code><strong>Résultats :</strong> 15K abonnés TikTok en 2 mois, 3 vidéos virales (+100K vues), +60% d'inscriptions</code>
+                    </div>
+                </div>
+                <div class="tip-box">
+                    <i class="fas fa-lightbulb"></i>
+                    <strong>Ajouter plus de projets :</strong> Cliquez autant de fois que nécessaire sur <strong>"+ Ajouter un élément"</strong> pour créer des volets supplémentaires (Zen & Beauty, Immo Premium, TechStart...). Nous en faisons 3 minimum.
+                </div>
+            </div>
+        </div>
+
+        <!-- 3.3 -->
+        <div class="step-card" data-step="3.3">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge">3.3</div>
+                <div class="step-title-area">
+                    <div class="step-title">Personnaliser le style de l'accordéon</div>
+                    <div class="step-time"><i class="fas fa-clock"></i> 2 min</div>
+                </div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body">
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text">Cliquez sur l'accordéon pour le sélectionner, puis allez dans l'onglet <strong>Style</strong>.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text"><strong>Bordure :</strong>
+                        <br>• <strong>Type de bordure :</strong> Solide
+                        <br>• <strong>Largeur :</strong> <code>1</code>px
+                        <br>• <strong>Couleur :</strong> <code>#E0E0E0</code> (gris clair)
+                    </div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text"><strong>Titre :</strong>
+                        <br>• <strong>Couleur du texte :</strong> <code>#2C3E50</code> (bleu foncé)
+                        <br>• <strong>Couleur du texte actif :</strong> <code>#E17055</code> (orange — volet ouvert)
+                        <br>• <strong>Typographie → Taille :</strong> <code>18</code>px | <strong>Graisse :</strong> <code>600</code>
+                    </div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text"><strong>Contenu :</strong>
+                        <br>• <strong>Couleur :</strong> <code>#555555</code> (gris moyen, lisible)
+                        <br>• <strong>Typographie → Taille :</strong> <code>15</code>px
+                    </div>
+                </div>
+                <div class="localwp-box">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Version gratuite :</strong> Le widget Accordéon est bien inclus dans Elementor gratuit. Le widget "Toggle" (Bascule) est une alternative similaire où tous les volets sont fermés par défaut.
+                </div>
+                <div class="success-box">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Accordéons terminés !</strong> Vos visiteurs peuvent cliquer sur chaque projet pour découvrir le client, l'objectif, la stratégie et les résultats obtenus.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ═══════ SECTION 4 : BARRES DE COMPÉTENCES ═══════ -->
+    <section class="tuto-section fade-in-view" id="section-competences" data-nav-label="Compétences">
+        <span class="section-number">04</span>
+        <div class="section-header">
+            <div class="section-tag"><i class="fas fa-circle"></i> Section 4</div>
+            <h2 class="section-title">Barres de Compétences — Progression animée</h2>
+            <p class="section-desc">Des barres de progression animées pour mettre en valeur vos compétences sur chaque plateforme.</p>
+        </div>
+
+        <div class="preview-mockup mb-4">
+            <div class="mockup-toolbar">
+                <div class="mockup-dot red"></div><div class="mockup-dot yellow"></div><div class="mockup-dot green"></div>
+                <div class="mockup-url">portfolio-cm.local/#competences</div>
+            </div>
+            <div class="mockup-content" style="background:var(--bg-secondary);padding:2rem;">
+                <div style="text-align:center;font-family:var(--font-display);font-weight:700;font-size:1rem;margin-bottom:1.2rem;">Mes Compétences</div>
+                <div style="max-width:450px;margin:0 auto;">
+                    <div class="skill-bar-preview">
+                        <div class="skill-bar-label"><span><i class="fab fa-instagram" style="color:#E1306C;margin-right:4px;"></i>Instagram</span><span>95%</span></div>
+                        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:95%;background:linear-gradient(90deg,#E1306C,#F77737);"></div></div>
+                    </div>
+                    <div class="skill-bar-preview">
+                        <div class="skill-bar-label"><span><i class="fab fa-facebook" style="color:#1877F2;margin-right:4px;"></i>Facebook</span><span>90%</span></div>
+                        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:90%;background:linear-gradient(90deg,#1877F2,#42A5F5);"></div></div>
+                    </div>
+                    <div class="skill-bar-preview">
+                        <div class="skill-bar-label"><span><i class="fab fa-tiktok" style="color:#fff;margin-right:4px;"></i>TikTok</span><span>85%</span></div>
+                        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:85%;background:linear-gradient(90deg,#000,#69C9D0);"></div></div>
+                    </div>
+                    <div class="skill-bar-preview">
+                        <div class="skill-bar-label"><span><i class="fab fa-linkedin" style="color:#0A66C2;margin-right:4px;"></i>LinkedIn</span><span>80%</span></div>
+                        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%;background:linear-gradient(90deg,#0A66C2,#2196F3);"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4.1 -->
+        <div class="step-card" data-step="4.1">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge">4.1</div>
+                <div class="step-title-area">
+                    <div class="step-title">Créer la section + Titre</div>
+                    <div class="step-time"><i class="fas fa-clock"></i> 1 min</div>
+                </div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body">
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text">Cliquez sur le <strong>« + »</strong> → <strong>1 colonne</strong>.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text">Éditez la section → <strong>Style → Arrière-plan :</strong> couleur <code>#F8F9FA</code> (gris très clair) pour contraster avec les sections précédentes.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text"><strong>Avancé → Rembourrage :</strong> <code>60</code>px haut et bas.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon drag"><i class="fas fa-hand-pointer"></i></div>
+                    <div class="instruction-text">Glissez un <strong>Titre</strong> → <code>Mes Compétences</code> → H2, Centre, Taille <code>36</code>px, Couleur <code>#2C3E50</code>.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4.2 -->
+        <div class="step-card" data-step="4.2">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge">4.2</div>
+                <div class="step-title-area">
+                    <div class="step-title">Ajouter les 4 Barres de progression</div>
+                    <div class="step-time"><i class="fas fa-clock"></i> 4 min</div>
+                </div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body">
+                <div class="instruction">
+                    <div class="instruction-icon drag"><i class="fas fa-hand-pointer"></i></div>
+                    <div class="instruction-text">Dans le panneau de gauche, cherchez le widget <strong>« Barre de progression »</strong> (Progress Bar). Glissez-le sous le titre.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon setting"><i class="fas fa-cog"></i></div>
+                    <div class="instruction-text">Configurez la <strong>1ère barre — Instagram</strong> :
+                        <br>• <strong>Titre :</strong> <code>Instagram</code>
+                        <br>• <strong>Pourcentage :</strong> <code>95</code>
+                        <br>• <strong>Afficher le pourcentage :</strong> Oui (activé)
+                    </div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text">Allez dans l'onglet <strong>Style</strong> :
+                        <br>• <strong>Couleur de la barre :</strong> <code>#E1306C</code> (rose Instagram)
+                        <br>• <strong>Couleur d'arrière-plan de la barre :</strong> <code>#E8E8E8</code> (gris clair)
+                        <br>• <strong>Hauteur de la barre :</strong> <code>12</code>px (ou plus si vous voulez des barres plus épaisses)
+                        <br>• <strong>Rayon de bordure (interne) :</strong> <code>10</code>px (coins arrondis)
+                    </div>
+                </div>
+                <div class="tip-box">
+                    <i class="fas fa-lightbulb"></i>
+                    <strong>Gain de temps :</strong> Configurez la 1ère barre parfaitement (style, hauteur, coins arrondis), puis faites <strong>clic droit → Dupliquer</strong> 3 fois. Changez ensuite seulement le titre, le pourcentage et la couleur.
+                </div>
+
+                <div class="instruction">
+                    <div class="instruction-icon drag"><i class="fas fa-hand-pointer"></i></div>
+                    <div class="instruction-text">Ajoutez (ou dupliquez) les 3 barres suivantes :</div>
+                </div>
+
+                <table class="recap-table">
+                    <thead><tr><th>Barre</th><th>Titre</th><th>%</th><th>Couleur</th></tr></thead>
+                    <tbody>
+                        <tr><td>1</td><td><code>Instagram</code></td><td><code>95</code>%</td><td><code>#E1306C</code> (rose)</td></tr>
+                        <tr><td>2</td><td><code>Facebook</code></td><td><code>90</code>%</td><td><code>#1877F2</code> (bleu Facebook)</td></tr>
+                        <tr><td>3</td><td><code>TikTok</code></td><td><code>85</code>%</td><td><code>#000000</code> (noir TikTok)</td></tr>
+                        <tr><td>4</td><td><code>LinkedIn</code></td><td><code>80</code>%</td><td><code>#0A66C2</code> (bleu LinkedIn)</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="instruction">
+                    <div class="instruction-icon info"><i class="fas fa-info"></i></div>
+                    <div class="instruction-text"><strong>Animation automatique :</strong> Les barres de progression s'animent automatiquement quand le visiteur scrolle jusqu'à cette section. Elles se remplissent de 0% jusqu'au pourcentage défini — c'est un effet très impressionnant !</div>
+                </div>
+
+                <div class="localwp-box">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Version gratuite :</strong> Le widget Barre de progression (Progress Bar) est bien inclus dans Elementor gratuit. L'animation de remplissage est incluse par défaut, sans aucun code nécessaire.
+                </div>
+
+                <div class="success-box">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Barres de compétences terminées !</strong> 4 barres animées avec les couleurs officielles de chaque réseau social. Vos visiteurs voient immédiatement votre niveau d'expertise.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ═══════ SECTION 5 : PUBLIER ═══════ -->
+    <section class="tuto-section fade-in-view" id="section-publier" data-nav-label="Publier">
+        <span class="section-number">05</span>
+        <div class="section-header">
+            <div class="section-tag"><i class="fas fa-circle"></i> Finalisation</div>
+            <h2 class="section-title">Publier &amp; Vérifier</h2>
+            <p class="section-desc">Sauvegardez votre travail, vérifiez le rendu et admirez le résultat.</p>
+        </div>
+
+        <!-- 5.1 -->
+        <div class="step-card" data-step="5.1">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge"><i class="fas fa-rocket"></i></div>
+                <div class="step-title-area">
+                    <div class="step-title">Publier et voir le résultat</div>
+                    <div class="step-time"><i class="fas fa-clock"></i> 30 sec</div>
+                </div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body">
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text">En bas à gauche de l'éditeur Elementor, cliquez sur <strong>"PUBLIER"</strong> (ou <strong>Ctrl+S</strong>). Confirmez.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text">Cliquez sur <strong>"Voir la page"</strong> pour admirer votre portfolio dans un nouvel onglet.</div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text"><strong>Testez les interactions :</strong>
+                        <br>• Scrollez jusqu'aux <strong>barres de compétences</strong> : elles doivent s'animer en se remplissant
+                        <br>• Cliquez sur les <strong>volets de l'accordéon</strong> : ils doivent s'ouvrir/fermer
+                        <br>• Vérifiez que les <strong>images</strong> de la galerie s'affichent avec leurs légendes
+                    </div>
+                </div>
+                <div class="instruction">
+                    <div class="instruction-icon click"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="instruction-text"><strong>Test responsive :</strong> Retournez dans l'éditeur Elementor, cliquez sur l'icône <strong>📱 responsive</strong> en bas à gauche (ou <strong>Ctrl+Shift+M</strong>). Vérifiez le rendu sur tablette et mobile. La grille de 3 colonnes devrait passer à 1 colonne automatiquement sur mobile.</div>
+                </div>
+                <div class="localwp-box">
+                    <i class="fas fa-globe"></i>
+                    <strong>Local WP :</strong> Page visible à <span class="localwp-url">http://votre-site.local/mon-portfolio-cm/</span>. Utilisez <strong>"Live Link"</strong> dans Local WP pour la partager temporairement avec le formateur.
+                </div>
+                <div class="success-box">
+                    <i class="fas fa-trophy"></i>
+                    <strong>Félicitations !</strong> Votre Page Portfolio CM est terminée ! 4 sections professionnelles : introduction élégante, galerie de projets en grille, fiches détaillées en accordéon et barres de compétences animées. Le tout avec la version <strong>100% gratuite</strong> d'Elementor sur <strong>Local WP</strong>.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ═══════ RÉCAPITULATIF ═══════ -->
+    <section class="tuto-section fade-in-view" id="section-recap" data-nav-label="Récapitulatif">
+        <span class="section-number">✓</span>
+        <div class="section-header">
+            <div class="section-tag"><i class="fas fa-circle"></i> Récapitulatif</div>
+            <h2 class="section-title">Checklist &amp; Référence</h2>
+        </div>
+
+        <div class="step-card" style="border-color:rgba(0,206,201,0.2);">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge" style="background:linear-gradient(135deg,var(--accent-success),rgba(0,206,201,0.5));"><i class="fas fa-clipboard-check"></i></div>
+                <div class="step-title-area"><div class="step-title">Checklist de vérification</div></div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body show">
+                <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><i class="fas fa-check"></i></div><div class="check-label">Local WP lancé, site démarré (point vert "Running")</div></div>
+                <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><i class="fas fa-check"></i></div><div class="check-label">Modèle de page : "Elementor Pleine largeur"</div></div>
+                <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><i class="fas fa-check"></i></div><div class="check-label">Section Introduction : Titre H1 "Mon Portfolio" + séparateur + texte de présentation</div></div>
+                <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><i class="fas fa-check"></i></div><div class="check-label">Section Galerie : Titre H2 + 6 images en grille 3×2 avec légendes</div></div>
+                <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><i class="fas fa-check"></i></div><div class="check-label">Section Détails : Titre H2 + Accordéon avec 3+ projets (Client/Objectif/Stratégie/Résultats)</div></div>
+                <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><i class="fas fa-check"></i></div><div class="check-label">Section Compétences : Titre H2 + 4 barres de progression (Instagram 95%, Facebook 90%, TikTok 85%, LinkedIn 80%)</div></div>
+                <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><i class="fas fa-check"></i></div><div class="check-label">Les barres de progression s'animent au scroll</div></div>
+                <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><i class="fas fa-check"></i></div><div class="check-label">L'accordéon s'ouvre/se ferme correctement</div></div>
+                <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><i class="fas fa-check"></i></div><div class="check-label">Page publiée et vérifiée (desktop + mobile)</div></div>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge" style="background:linear-gradient(135deg,var(--accent-cool),rgba(116,185,255,0.5));"><i class="fas fa-puzzle-piece"></i></div>
+                <div class="step-title-area"><div class="step-title">Widgets utilisés (tous gratuits)</div></div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body">
+                <table class="recap-table">
+                    <thead><tr><th>Widget</th><th>Section</th><th>Gratuit ?</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Titre</strong> (Heading)</td><td>Intro, Galerie, Détails, Compétences</td><td style="color:var(--accent-success);">✅ Oui</td></tr>
+                        <tr><td><strong>Éditeur de texte</strong> (Text Editor)</td><td>Introduction</td><td style="color:var(--accent-success);">✅ Oui</td></tr>
+                        <tr><td><strong>Séparateur</strong> (Divider)</td><td>Introduction</td><td style="color:var(--accent-success);">✅ Oui</td></tr>
+                        <tr><td><strong>Image</strong></td><td>Galerie (×6)</td><td style="color:var(--accent-success);">✅ Oui</td></tr>
+                        <tr><td><strong>Accordéon</strong> (Accordion)</td><td>Détails projets</td><td style="color:var(--accent-success);">✅ Oui</td></tr>
+                        <tr><td><strong>Barre de progression</strong> (Progress Bar)</td><td>Compétences (×4)</td><td style="color:var(--accent-success);">✅ Oui</td></tr>
+                    </tbody>
+                </table>
+                <div class="localwp-box">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>100% gratuit !</strong> Aucun widget Pro n'a été utilisé dans cet exercice.
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-header" onclick="toggleStep(this)">
+                <div class="step-number-badge" style="background:linear-gradient(135deg,var(--accent-warning),rgba(253,203,110,0.5));"><i class="fas fa-keyboard"></i></div>
+                <div class="step-title-area"><div class="step-title">Raccourcis clavier Elementor</div></div>
+                <button class="step-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div class="step-body">
+                <table class="recap-table">
+                    <thead><tr><th>Raccourci</th><th>Action</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>Ctrl + S</code></td><td>Sauvegarder / Publier</td></tr>
+                        <tr><td><code>Ctrl + Z</code></td><td>Annuler</td></tr>
+                        <tr><td><code>Ctrl + D</code></td><td>Dupliquer l'élément</td></tr>
+                        <tr><td><code>Suppr</code></td><td>Supprimer l'élément</td></tr>
+                        <tr><td><code>Ctrl + Shift + M</code></td><td>Aperçu responsive (mobile/tablette)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+</div><!-- /col-lg-8 -->
+
+<!-- RIGHT SIDEBAR -->
+<div class="col-lg-4">
+    <div class="progress-panel" id="progressPanel">
+        <div class="progress-title"><i class="fas fa-chart-line" style="color:var(--accent-primary);margin-right:6px;"></i> Progression</div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBarFill"></div></div>
+        <div class="progress-text" id="progressText">0 / 15 étapes</div>
+        <div class="section-divider" style="margin:1rem 0;"></div>
+
+        <div class="progress-section-item active-section" data-target="section-prerequis" onclick="scrollToSection(this)"><div class="status-icon"><i class="fas fa-check"></i></div><span>0. Prérequis</span></div>
+        <div class="progress-section-item" data-target="section-intro" onclick="scrollToSection(this)"><div class="status-icon"><i class="fas fa-check"></i></div><span>1. Introduction</span></div>
+        <div class="progress-section-item" data-target="section-galerie" onclick="scrollToSection(this)"><div class="status-icon"><i class="fas fa-check"></i></div><span>2. Galerie Projets</span></div>
+        <div class="progress-section-item" data-target="section-accordeon" onclick="scrollToSection(this)"><div class="status-icon"><i class="fas fa-check"></i></div><span>3. Détails Accordéon</span></div>
+        <div class="progress-section-item" data-target="section-competences" onclick="scrollToSection(this)"><div class="status-icon"><i class="fas fa-check"></i></div><span>4. Compétences</span></div>
+        <div class="progress-section-item" data-target="section-publier" onclick="scrollToSection(this)"><div class="status-icon"><i class="fas fa-check"></i></div><span>5. Publier</span></div>
+        <div class="progress-section-item" data-target="section-recap" onclick="scrollToSection(this)"><div class="status-icon"><i class="fas fa-check"></i></div><span>✓ Récapitulatif</span></div>
+
+        <div class="section-divider" style="margin:1rem 0;"></div>
+        <div style="text-align:center;">
+            <button class="btn btn-sm px-3 py-2" style="background:rgba(225,112,85,0.15);color:var(--accent-secondary);border:1px solid rgba(225,112,85,0.25);border-radius:10px;font-size:0.78rem;font-weight:600;" onclick="expandAll()"><i class="fas fa-expand-alt me-1"></i> Tout déplier</button>
+            <button class="btn btn-sm px-3 py-2 ms-1" style="background:rgba(116,185,255,0.1);color:var(--accent-cool);border:1px solid rgba(116,185,255,0.2);border-radius:10px;font-size:0.78rem;font-weight:600;" onclick="collapseAll()"><i class="fas fa-compress-alt me-1"></i> Tout replier</button>
+        </div>
+        <div class="section-divider" style="margin:1rem 0;"></div>
+        <div style="background:rgba(225,112,85,0.06);border-radius:var(--radius-md);padding:1rem;font-size:0.78rem;color:var(--text-muted);line-height:1.6;">
+            <i class="fas fa-info-circle" style="color:var(--accent-primary);"></i>
+            <strong style="color:var(--text-secondary);">Légende :</strong><br>
+            <span style="color:var(--accent-primary);"><i class="fas fa-mouse-pointer"></i></span> Cliquer &nbsp;
+            <span style="color:var(--accent-success);"><i class="fas fa-keyboard"></i></span> Taper &nbsp;
+            <span style="color:var(--accent-cool);"><i class="fas fa-hand-pointer"></i></span> Glisser &nbsp;
+            <span style="color:var(--accent-purple);"><i class="fas fa-cog"></i></span> Régler &nbsp;
+            <span style="color:var(--accent-localwp);"><i class="fas fa-server"></i></span> LocalWP &nbsp;
+            <span style="color:var(--accent-warning);"><i class="fas fa-info"></i></span> Info
+        </div>
+    </div>
+</div>
+</div>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-brand"><span>MODE</span>83</div>
+        <p class="footer-text text-white">Centre de Formation Numérique — Draguignan</p>
+        <p class="footer-text text-white" style="margin-top:4px;">Exercice 2 : Page Portfolio CM — <strong>Local WP</strong> + <strong>Elementor Gratuit</strong></p>
+        <p class="footer-text text-white" style="margin-top:4px;">Formation CM</p>
+        <p class="footer-text text-white" style="margin-top:8px;opacity:0.8;">© 2026 MODE 83</p>
+    </div>
+</footer>
+
+<div class="confetti-container" id="confettiContainer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function toggleStep(h){const c=h.closest('.step-card'),b=c.querySelector('.step-body'),t=c.querySelector('.step-toggle');b.classList.toggle('show');t.classList.toggle('open');if(b.classList.contains('show')){c.classList.add('completed');updateProgress();}}
+function expandAll(){document.querySelectorAll('.step-card').forEach(c=>{c.querySelector('.step-body').classList.add('show');c.querySelector('.step-toggle').classList.add('open');c.classList.add('completed');});updateProgress();}
+function collapseAll(){document.querySelectorAll('.step-card').forEach(c=>{c.querySelector('.step-body').classList.remove('show');c.querySelector('.step-toggle').classList.remove('open');});}
+function toggleCheck(i){i.classList.toggle('checked');updateProgress();}
+function updateProgress(){const t=document.querySelectorAll('.step-card').length,d=document.querySelectorAll('.step-card.completed').length,p=Math.round((d/t)*100);document.getElementById('progressBarFill').style.width=p+'%';document.getElementById('progressText').textContent=d+' / '+t+' étapes';document.getElementById('navProgressBar').style.width=p+'%';document.getElementById('progressPercent').textContent=p+'%';if(p===100)launchConfetti();}
+function scrollToSection(e){const t=document.getElementById(e.getAttribute('data-target'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});}
+function buildSidebarNav(){const s=document.querySelectorAll('.tuto-section'),sb=document.getElementById('sidebarNav');s.forEach(sec=>{const d=document.createElement('button');d.className='sidebar-dot';d.setAttribute('data-label',sec.getAttribute('data-nav-label')||'');d.addEventListener('click',()=>sec.scrollIntoView({behavior:'smooth',block:'start'}));sb.appendChild(d);});}
+function setupObservers(){const fo=new IntersectionObserver(e=>e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('visible');}),{threshold:0.1});document.querySelectorAll('.fade-in-view').forEach(el=>fo.observe(el));const ss=document.querySelectorAll('.tuto-section'),dots=document.querySelectorAll('.sidebar-dot'),items=document.querySelectorAll('.progress-section-item');const so=new IntersectionObserver(e=>e.forEach(en=>{if(en.isIntersecting){const i=Array.from(ss).indexOf(en.target);dots.forEach((d,j)=>d.classList.toggle('active',j===i));items.forEach((p,j)=>p.classList.toggle('active-section',j===i));}}),{threshold:0.2,rootMargin:'-80px 0px -50% 0px'});ss.forEach(s=>so.observe(s));}
+function launchConfetti(){const c=document.getElementById('confettiContainer'),cols=['#E17055','#74b9ff','#00cec9','#fdcb6e','#51E27D','#a29bfe'];for(let i=0;i<80;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.left=Math.random()*100+'vw';p.style.background=cols[Math.floor(Math.random()*cols.length)];p.style.animationDelay=Math.random()*2+'s';p.style.borderRadius=Math.random()>0.5?'50%':'2px';p.style.width=(Math.random()*8+6)+'px';p.style.height=(Math.random()*8+6)+'px';c.appendChild(p);}setTimeout(()=>c.innerHTML='',5000);}
+document.addEventListener('DOMContentLoaded',()=>{buildSidebarNav();setupObservers();window.addEventListener('scroll',()=>document.getElementById('topNav').classList.toggle('scrolled',window.scrollY>50));});
+</script>
+</body>
+</html>
